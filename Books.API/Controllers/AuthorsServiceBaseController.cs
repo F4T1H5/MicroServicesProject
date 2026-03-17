@@ -1,40 +1,39 @@
-﻿using MediatR;
+﻿using Books.App.Features.Authors;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Books.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize] // Uncomment this line to enable authorization for this controller
+    //[Authorize]
     public class AuthorsServiceBaseController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public GroupsController(IMediator mediator)
+        public AuthorsServiceBaseController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpGet] // HttpGet: attribute also called action method, get route: /Groups
-                  //[AllowAnonymous] // Can be used to allow authenticated and unauthenticated users (everyone) to execute this action.
-                  // Overrides the Authorize defined for the controller.
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var query = await _mediator.Send(new GroupQueryRequest());
+            var query = await _mediator.Send(new AuthorQueryServiceBaseRequest());
 
             var list = await query.ToListAsync();
 
             return Ok(list);
         }
 
-        [HttpGet("{id}")] // get route: /Groups/5 (name defined in {} must be same as the action's parameter name, id will be 5)
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var query = await _mediator.Send(new GroupQueryRequest());
+            var query = await _mediator.Send(new AuthorQueryServiceBaseRequest());
 
-            var item = await query.SingleOrDefaultAsync(groupResponse => groupResponse.Id == id);
+            var item = await query.SingleOrDefaultAsync(authorResponse => authorResponse.Id == id);
 
             if (item is null)
                 return NotFound();
@@ -42,9 +41,9 @@ namespace Books.API.Controllers
             return Ok(item);
         }
 
-        [HttpPost] // post route: /Groups
-        [Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
-        public async Task<IActionResult> Post(GroupCreateRequest request)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Post(AuthorCreateServiceBaseRequest request)
         {
             if (ModelState.IsValid)
             {
@@ -61,9 +60,9 @@ namespace Books.API.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpPut] // put route: /Groups
-        [Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
-        public async Task<IActionResult> Put(GroupUpdateRequest request)
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Put(AuthorUpdateServiceBaseRequest request)
         {
             if (ModelState.IsValid)
             {
@@ -80,16 +79,17 @@ namespace Books.API.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpDelete("{id}")] // delete route: /Groups/5 (name defined in {} must be same as the action's parameter name, id will be 5)
-        [Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _mediator.Send(new GroupDeleteRequest() { Id = id });
+            var response = await _mediator.Send(new AuthorDeleteServiceBaseRequest() { Id = id });
 
             if (response.IsSuccessful)
             {
                 return NoContent();
             }
+
             return BadRequest(response);
         }
     }
