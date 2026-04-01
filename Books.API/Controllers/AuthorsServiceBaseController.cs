@@ -42,7 +42,7 @@ namespace Books.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post(AuthorCreateServiceBaseRequest request)
         {
             if (ModelState.IsValid)
@@ -61,7 +61,7 @@ namespace Books.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put(AuthorUpdateServiceBaseRequest request)
         {
             if (ModelState.IsValid)
@@ -80,7 +80,7 @@ namespace Books.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _mediator.Send(new AuthorDeleteServiceBaseRequest() { Id = id });
