@@ -53,7 +53,7 @@ namespace Users.APP.Features.Users
 
         public string GroupF { get; set; }
         public List<string> RolesF { get; set; }
-        public GroupQueryResponse Group { get; set; }
+        public GroupQueryResponse? Group { get; set; }
         public List<RoleQueryResponse> Roles { get; set; }
     }
 
@@ -188,11 +188,14 @@ namespace Users.APP.Features.Users
 
                 RolesF = u.UserRoles.Select(ur => ur.Role.Name).ToList(),
 
-                Group = new GroupQueryResponse
-                {
-                    Id = u.Group.Id,
-                    Title = u.Group.Title
-                },
+                Group = u.Group != null
+                    ? new GroupQueryResponse
+                    {
+                        Id = u.Group.Id,
+                        Title = u.Group.Title
+                    }
+                    : null,
+
                 Roles = u.UserRoles.Select(ur => new RoleQueryResponse
                 {
                     Id = ur.Role.Id,

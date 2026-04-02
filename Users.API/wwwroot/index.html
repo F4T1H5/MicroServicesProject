@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Users API Console</title>
+    <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+    <div class="page-shell">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Users.API</p>
+                <h1>Manage users without Swagger.</h1>
+                <p class="hero-copy">
+                    View and maintain groups, roles, and users from one dashboard.
+                </p>
+            </div>
+            <div class="hero-actions">
+                <button id="refreshButton" class="secondary-button" type="button">Refresh Data</button>
+                <button id="seedButton" class="primary-button" type="button">Seed Demo Data</button>
+            </div>
+        </header>
+
+        <section class="stats-grid" aria-label="Overview">
+            <article class="stat-card">
+                <span class="stat-label">Groups</span>
+                <strong id="groupCount" class="stat-value">0</strong>
+            </article>
+            <article class="stat-card">
+                <span class="stat-label">Roles</span>
+                <strong id="roleCount" class="stat-value">0</strong>
+            </article>
+            <article class="stat-card">
+                <span class="stat-label">Users</span>
+                <strong id="userCount" class="stat-value">0</strong>
+            </article>
+            <article class="stat-card">
+                <span class="stat-label">Active Users</span>
+                <strong id="activeUserCount" class="stat-value">0</strong>
+            </article>
+        </section>
+
+        <section id="messageBanner" class="message-banner hidden" aria-live="polite"></section>
+
+        <main class="content-grid">
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-kicker">Organize users</p>
+                        <h2>Groups</h2>
+                    </div>
+                    <button id="resetGroupFormButton" class="ghost-button" type="button">New Group</button>
+                </div>
+
+                <form id="groupForm" class="stack-form">
+                    <input id="groupId" type="hidden" />
+                    <label>
+                        <span>Title</span>
+                        <input id="groupTitle" maxlength="100" name="title" required type="text" />
+                    </label>
+                    <div class="form-actions">
+                        <button id="groupSubmitButton" class="primary-button" type="submit">Create Group</button>
+                    </div>
+                </form>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="groupsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-kicker">Access levels</p>
+                        <h2>Roles</h2>
+                    </div>
+                    <button id="resetRoleFormButton" class="ghost-button" type="button">New Role</button>
+                </div>
+
+                <form id="roleForm" class="stack-form">
+                    <input id="roleId" type="hidden" />
+                    <label>
+                        <span>Name</span>
+                        <input id="roleName" maxlength="25" name="name" required type="text" />
+                    </label>
+                    <div class="form-actions">
+                        <button id="roleSubmitButton" class="primary-button" type="submit">Create Role</button>
+                    </div>
+                </form>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Users</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rolesTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="panel panel-wide">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-kicker">Accounts</p>
+                        <h2>Users</h2>
+                    </div>
+                    <button id="resetUserFormButton" class="ghost-button" type="button">New User</button>
+                </div>
+
+                <form id="userForm" class="stack-form">
+                    <input id="userId" type="hidden" />
+
+                    <div class="form-grid">
+                        <label>
+                            <span>User name</span>
+                            <input id="userUserName" maxlength="30" minlength="4" required type="text" />
+                        </label>
+                        <label>
+                            <span>Password</span>
+                            <input id="userPassword" maxlength="15" minlength="3" required type="text" />
+                        </label>
+                        <label>
+                            <span>First name</span>
+                            <input id="userFirstName" maxlength="50" type="text" />
+                        </label>
+                        <label>
+                            <span>Last name</span>
+                            <input id="userLastName" maxlength="50" type="text" />
+                        </label>
+                        <label>
+                            <span>Gender</span>
+                            <select id="userGender">
+                                <option value="1">Woman</option>
+                                <option value="2">Man</option>
+                            </select>
+                        </label>
+                        <label>
+                            <span>Birth date</span>
+                            <input id="userBirthDate" type="date" />
+                        </label>
+                        <label>
+                            <span>Score (0-5)</span>
+                            <input id="userScore" max="5" min="0" step="0.1" type="number" />
+                        </label>
+                        <label>
+                            <span>Group</span>
+                            <select id="userGroupId"></select>
+                        </label>
+                        <label>
+                            <span>Country ID</span>
+                            <input id="userCountryId" min="1" type="number" />
+                        </label>
+                        <label>
+                            <span>City ID</span>
+                            <input id="userCityId" min="1" type="number" />
+                        </label>
+                    </div>
+
+                    <label>
+                        <span>Address</span>
+                        <input id="userAddress" maxlength="200" type="text" />
+                    </label>
+
+                    <label class="checkbox-field">
+                        <input id="userIsActive" type="checkbox" />
+                        <span>Active account</span>
+                    </label>
+
+                    <fieldset>
+                        <legend>Roles</legend>
+                        <div id="userRoles" class="checkbox-grid"></div>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <button id="userSubmitButton" class="primary-button" type="submit">Create User</button>
+                    </div>
+                </form>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Group</th>
+                                <th>Roles</th>
+                                <th>Status</th>
+                                <th>Score</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
