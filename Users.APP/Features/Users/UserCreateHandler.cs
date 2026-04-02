@@ -9,7 +9,7 @@ namespace Users.APP.Features.Users
 {
     public class UserCreateRequest : Request, IRequest<CommandResponse>
     {
-        [Required, StringLength(30, MinimumLength = 4)] 
+        [Required, StringLength(30, MinimumLength = 4)]
         public string UserName { get; set; }
 
         [Required, StringLength(15, MinimumLength = 3)]
@@ -49,8 +49,11 @@ namespace Users.APP.Features.Users
 
     public class UserCreateHandler : Service<User>, IRequestHandler<UserCreateRequest, CommandResponse>
     {
+        private readonly DbContext _db;
+
         public UserCreateHandler(DbContext db) : base(db)
         {
+            _db = db;
         }
 
         public async Task<CommandResponse> Handle(UserCreateRequest request, CancellationToken cancellationToken)
@@ -58,22 +61,43 @@ namespace Users.APP.Features.Users
             if (await DbSet().AnyAsync(u => u.IsActive && u.UserName == request.UserName, cancellationToken))
                 return Error("Active user with the same user name exists!");
 
+            // Validate GroupId if provided
+            if (request.GroupId.HasValue)
+            {
+                var groupExists = await _db.Set<Group>().AnyAsync(g => g.Id == request.GroupId.Value, cancellationToken);
+                if (!groupExists)
+                    return Error($"Group with ID {request.GroupId} does not exist!");
+            }
+
+            // Validate RoleIds if provided
+            if (request.RoleIds != null && request.RoleIds.Any())
+            {
+                var existingRoleIds = await _db.Set<Role>()
+                    .Where(r => request.RoleIds.Contains(r.Id))
+                    .Select(r => r.Id)
+                    .ToListAsync(cancellationToken);
+
+                var invalidRoleIds = request.RoleIds.Except(existingRoleIds).ToList();
+                if (invalidRoleIds.Any())
+                    return Error($"Role(s) with ID(s) {string.Join(", ", invalidRoleIds)} do not exist!");
+            }
+
             var entity = new User
             {
                 UserName = request.UserName,
                 Password = request.Password,
-                FirstName = request.FirstName?.Trim(), // ? is used because request.FirstName can be null
-                LastName = request.LastName?.Trim(), // ? is used because request.LastName can be null
+                FirstName = request.FirstName?.Trim(),
+                LastName = request.LastName?.Trim(),
                 Gender = request.Gender,
                 BirthDate = request.BirthDate,
-                RegistrationDate = DateTime.Now, // set registration date to the current date and time 
+                RegistrationDate = DateTime.Now,
                 Score = request.Score,
                 IsActive = request.IsActive,
-                Address = request.Address?.Trim(), // ? is used because request.Address can be null
+                Address = request.Address?.Trim(),
                 CountryId = request.CountryId,
                 CityId = request.CityId,
                 GroupId = request.GroupId,
-                RoleIds = request.RoleIds
+                RoleIds = request.RoleIds ?? new List<int>()
             };
 
             await CreateAsync(entity, cancellationToken);

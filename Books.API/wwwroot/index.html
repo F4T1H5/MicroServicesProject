@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Books API Console</title>
+    <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+    <div class="page-shell">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Books.API</p>
+                <h1>Manage books without Swagger.</h1>
+                <p class="hero-copy">
+                    Browse authors, genres, and books from one screen, then create, update, or delete records with simple forms.
+                </p>
+            </div>
+            <div class="hero-actions">
+                <button id="refreshButton" class="secondary-button" type="button">Refresh Data</button>
+                <button id="seedButton" class="primary-button" type="button">Seed Demo Data</button>
+            </div>
+        </header>
+
+        <section class="stats-grid" aria-label="Overview">
+            <article class="stat-card">
+                <span class="stat-label">Authors</span>
+                <strong id="authorCount" class="stat-value">0</strong>
+            </article>
+            <article class="stat-card">
+                <span class="stat-label">Genres</span>
+                <strong id="genreCount" class="stat-value">0</strong>
+            </article>
+            <article class="stat-card">
+                <span class="stat-label">Books</span>
+                <strong id="bookCount" class="stat-value">0</strong>
+            </article>
+            <article class="stat-card">
+                <span class="stat-label">Top Sellers</span>
+                <strong id="topSellerCount" class="stat-value">0</strong>
+            </article>
+        </section>
+
+        <section id="messageBanner" class="message-banner hidden" aria-live="polite"></section>
+
+        <main class="content-grid">
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-kicker">Create and update</p>
+                        <h2>Authors</h2>
+                    </div>
+                    <button id="resetAuthorFormButton" class="ghost-button" type="button">New Author</button>
+                </div>
+
+                <form id="authorForm" class="stack-form">
+                    <input id="authorId" type="hidden" />
+                    <label>
+                        <span>First name</span>
+                        <input id="authorFirstName" maxlength="25" name="firstName" required type="text" />
+                    </label>
+                    <label>
+                        <span>Last name</span>
+                        <input id="authorLastName" maxlength="25" name="lastName" required type="text" />
+                    </label>
+                    <div class="form-actions">
+                        <button id="authorSubmitButton" class="primary-button" type="submit">Create Author</button>
+                    </div>
+                </form>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="authorsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-kicker">Classify books</p>
+                        <h2>Genres</h2>
+                    </div>
+                    <button id="resetGenreFormButton" class="ghost-button" type="button">New Genre</button>
+                </div>
+
+                <form id="genreForm" class="stack-form">
+                    <input id="genreId" type="hidden" />
+                    <label>
+                        <span>Name</span>
+                        <input id="genreName" maxlength="30" name="name" required type="text" />
+                    </label>
+                    <div class="form-actions">
+                        <button id="genreSubmitButton" class="primary-button" type="submit">Create Genre</button>
+                    </div>
+                </form>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Books</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="genresTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="panel panel-wide">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-kicker">Catalogue</p>
+                        <h2>Books</h2>
+                    </div>
+                    <button id="resetBookFormButton" class="ghost-button" type="button">New Book</button>
+                </div>
+
+                <form id="bookForm" class="stack-form">
+                    <input id="bookId" type="hidden" />
+                    <div class="form-grid">
+                        <label>
+                            <span>Name</span>
+                            <input id="bookName" maxlength="100" name="name" required type="text" />
+                        </label>
+                        <label>
+                            <span>Author</span>
+                            <select id="bookAuthorId" name="authorId" required></select>
+                        </label>
+                        <label>
+                            <span>Pages</span>
+                            <input id="bookNumberOfPages" min="1" name="numberOfPages" type="number" />
+                        </label>
+                        <label>
+                            <span>Publish date</span>
+                            <input id="bookPublishDate" name="publishDate" required type="date" />
+                        </label>
+                        <label>
+                            <span>Price</span>
+                            <input id="bookPrice" min="0.01" name="price" required step="0.01" type="number" />
+                        </label>
+                        <label class="checkbox-field">
+                            <input id="bookIsTopSeller" name="isTopSeller" type="checkbox" />
+                            <span>Mark as top seller</span>
+                        </label>
+                    </div>
+
+                    <fieldset>
+                        <legend>Genres</legend>
+                        <div id="bookGenres" class="checkbox-grid"></div>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <button id="bookSubmitButton" class="primary-button" type="submit">Create Book</button>
+                    </div>
+                </form>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Book</th>
+                                <th>Author</th>
+                                <th>Genres</th>
+                                <th>Published</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
