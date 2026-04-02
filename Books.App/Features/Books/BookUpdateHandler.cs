@@ -18,7 +18,7 @@ namespace Books.App.Features.Books
         [Required]
         public DateTime PublishDate { get; set; }
 
-        [Range(typeof(decimal), "0.01", "79228162514264337593543950335")]
+        [Range(0.01, (double)decimal.MaxValue)]
         public decimal Price { get; set; }
 
         public bool IsTopSeller { get; set; }
