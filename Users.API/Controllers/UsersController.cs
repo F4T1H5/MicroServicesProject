@@ -25,6 +25,10 @@ namespace Users.API.Controllers
 
         // GET: api/Users
         [HttpGet]
+        // Way 1:
+        //[Authorize(Roles = "Admin,User")] // Only authenticated users with role Admin or User can execute this action.
+        // Way 2: since we have only 2 roles Admin and User, we can use Authorize to check auhenticated users without defining roles.
+        [Authorize]
         public async Task<IActionResult> Get()
         {
             try
@@ -44,12 +48,13 @@ namespace Users.API.Controllers
                 // Log the exception
                 _logger.LogError("UsersGet Exception: " + exception.Message);
                 // Return 500 Internal Server Error with an error command response with message
-                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersGet.")); 
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersGet."));
             }
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
         public async Task<IActionResult> Get(int id)
         {
             try
@@ -69,12 +74,13 @@ namespace Users.API.Controllers
                 // Log the exception
                 _logger.LogError("UsersGetById Exception: " + exception.Message);
                 // Return 500 Internal Server Error with an error command response with message
-                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersGetById.")); 
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersGetById."));
             }
         }
 
-		// POST: api/Users
+        // POST: api/Users
         [HttpPost]
+        [Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
         public async Task<IActionResult> Post(UserCreateRequest request)
         {
             try
@@ -101,12 +107,13 @@ namespace Users.API.Controllers
                 // Log the exception
                 _logger.LogError("UsersPost Exception: " + exception.Message);
                 // Return 500 Internal Server Error with an error command response with message
-                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersPost.")); 
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersPost."));
             }
         }
 
         // PUT: api/Users
         [HttpPut]
+        [Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
         public async Task<IActionResult> Put(UserUpdateRequest request)
         {
             try
@@ -133,12 +140,13 @@ namespace Users.API.Controllers
                 // Log the exception
                 _logger.LogError("UsersPut Exception: " + exception.Message);
                 // Return 500 Internal Server Error with an error command response with message
-                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersPut.")); 
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersPut."));
             }
         }
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -161,13 +169,11 @@ namespace Users.API.Controllers
                 // Log the exception
                 _logger.LogError("UsersDelete Exception: " + exception.Message);
                 // Return 500 Internal Server Error with an error command response with message
-                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersDelete.")); 
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersDelete."));
             }
         }
 
         [HttpPost("[action]")]
-        //[Authorize(Roles = "Admin,User")] // Only authenticated users with role Admin or User can execute this action.
-        // Way 2: since we have only 2 roles Admin and User, we can use Authorize to check auhenticated users without defining roles.
         [Authorize]
         public async Task<IActionResult> GetFiltered(UserQueryRequest request)
         {
@@ -177,20 +183,5 @@ namespace Users.API.Controllers
                 return Ok(list);
             return NoContent();
         }
-
-        //[HttpGet("[action]")]
-        //[Authorize] // Only authenticated users can execute this action.
-        //public async Task<IActionResult> GetUserLocations()
-        //{
-        //    var list = await _mediator.Send(new UserLocationQueryRequest
-        //    {
-        //        // Gateway Countries API URL
-        //        CountriesApiUrl = "https://localhost:7237/api/countries",
-
-        //        // Gateway Cities API URL
-        //        CitiesApiUrl = "https://localhost:7237/api/cities"
-        //    });
-        //    return Ok(list);
-        //}
     }
 }

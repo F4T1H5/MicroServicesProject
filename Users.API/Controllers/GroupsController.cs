@@ -8,10 +8,7 @@ namespace Users.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // Way 1:
-    //[Authorize(Roles = "Admin,User")] // Only authenticated users with Admin or User role can execute all of the actions of this controller.
-    // Way 2:
-    //[Authorize] // Only authenticated users can execute all of the actions of this controller.
+    [Authorize] // Only authenticated users can execute all of the actions of this controller.
                 // Since we have only 2 roles Admin and User, we can use Authorize to check auhenticated users without defining roles.
     public class GroupsController : ControllerBase
     {
@@ -35,10 +32,19 @@ namespace Users.API.Controllers
 
             // Return the list of groups with HTTP 200 OK.
             return Ok(list);
+
+            /*
+            ActionResult inheritance:  
+            IActionResult: general return type of actions in a controller  
+            |  
+            ActionResult: base class that implements IActionResult  
+            |  
+            OkObjectResult (returned by Ok method) - NotFoundResult (returned by NotFound method) - 
+            BadRequestObjectResult (returned by BadRequest method) - etc.
+            */
         }
 
         [HttpGet("{id}")] // get route: /Groups/5 (name defined in {} must be same as the action's parameter name, id will be 5)
-        // Only authenticated users (since Authorize is defined at the controller level) can execute this action.
         public async Task<IActionResult> Get(int id)
         {
             // Send a GroupQueryRequest to MediatR, which dispatches it to the appropriate handler (GroupQueryHandler).
@@ -58,7 +64,7 @@ namespace Users.API.Controllers
         }
 
         [HttpPost] // post route: /Groups
-        //[Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
+        [Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
                                      // Overrides the Authorize defined for the controller.
         public async Task<IActionResult> Post(GroupCreateRequest request)
         {
@@ -86,7 +92,7 @@ namespace Users.API.Controllers
         }
 
         [HttpPut] // put route: /Groups
-        //[Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
+        [Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
                                      // Overrides the Authorize defined for the controller.
         public async Task<IActionResult> Put(GroupUpdateRequest request)
         {
@@ -114,7 +120,7 @@ namespace Users.API.Controllers
         }
 
         [HttpDelete("{id}")] // delete route: /Groups/5 (name defined in {} must be same as the action's parameter name, id will be 5)
-        //[Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
+        [Authorize(Roles = "Admin")] // Only authenticated users with role Admin can execute this action.
                                      // Overrides the Authorize defined for the controller.
         public async Task<IActionResult> Delete(int id)
         {
