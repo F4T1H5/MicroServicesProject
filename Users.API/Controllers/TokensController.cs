@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Users.APP.Features.Tokens;
 
@@ -6,6 +7,7 @@ namespace Users.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class TokensController : ControllerBase
     {
         private readonly IMediator _mediator;
