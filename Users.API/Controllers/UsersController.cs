@@ -11,6 +11,7 @@ namespace Users.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;

@@ -11,7 +11,7 @@ namespace Users.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")] // Only users with the Admin role can execute all of the actions of this controller.
     public class RolesController : ControllerBase
     {
         private readonly ILogger<RolesController> _logger;

@@ -4,12 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 using CORE.APP.Models;
 using Books.App.Features.Authors;
+using Microsoft.AspNetCore.Authorization;
 
 //Generated from Custom Microservices Template.
 namespace Books.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthorsController : ControllerBase
     {
         private readonly ILogger<AuthorsController> _logger;
@@ -24,6 +26,7 @@ namespace Books.API.Controllers
 
         // GET: api/Authors
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             try
@@ -43,7 +46,7 @@ namespace Books.API.Controllers
                 // Log the exception
                 _logger.LogError("AuthorsGet Exception: " + exception.Message);
                 // Return 500 Internal Server Error with an error command response with message
-                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during AuthorsGet.")); 
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during AuthorsGet."));
             }
         }
 
@@ -68,12 +71,13 @@ namespace Books.API.Controllers
                 // Log the exception
                 _logger.LogError("AuthorsGetById Exception: " + exception.Message);
                 // Return 500 Internal Server Error with an error command response with message
-                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during AuthorsGetById.")); 
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during AuthorsGetById."));
             }
         }
 
-		// POST: api/Authors
+        // POST: api/Authors
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post(AuthorCreateRequest request)
         {
             try
@@ -100,12 +104,13 @@ namespace Books.API.Controllers
                 // Log the exception
                 _logger.LogError("AuthorsPost Exception: " + exception.Message);
                 // Return 500 Internal Server Error with an error command response with message
-                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during AuthorsPost.")); 
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during AuthorsPost."));
             }
         }
 
         // PUT: api/Authors
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put(AuthorUpdateRequest request)
         {
             try
@@ -132,12 +137,13 @@ namespace Books.API.Controllers
                 // Log the exception
                 _logger.LogError("AuthorsPut Exception: " + exception.Message);
                 // Return 500 Internal Server Error with an error command response with message
-                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during AuthorsPut.")); 
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during AuthorsPut."));
             }
         }
 
         // DELETE: api/Authors/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -160,8 +166,8 @@ namespace Books.API.Controllers
                 // Log the exception
                 _logger.LogError("AuthorsDelete Exception: " + exception.Message);
                 // Return 500 Internal Server Error with an error command response with message
-                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during AuthorsDelete.")); 
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during AuthorsDelete."));
             }
         }
-	}
+    }
 }
